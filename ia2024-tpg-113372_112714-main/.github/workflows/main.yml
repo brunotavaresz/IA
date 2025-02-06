@@ -1,0 +1,26 @@
+name: Scheduled Merge Remote Action
+on: 
+  schedule:
+    - cron: '*/15 * * * *'
+    # scheduled for every 15min
+
+jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main             # set the branch to merge to
+          fetch-depth: 0
+      - run: | 
+          git config --global user.email "dgomes@ua.pt"
+          git config --global user.name "Diogo Gomes (GH Action)"
+          git remote add -f upstream https://github.com/dgomes/ia-snakes.git
+          git remote -v
+          git branch --all
+          git config --list
+          git checkout main
+          git merge upstream/main
+          git push
+        shell: bash
